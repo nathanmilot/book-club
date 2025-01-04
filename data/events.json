@@ -1,0 +1,52 @@
+{
+  "events": [
+    {
+      "book": {
+        "title": "The Bone Shard Daughter",
+        "author": "Andrea G. Stewart",
+        "isbn": "9780316541428",
+        "description": "The Bone Shard Daughter is a 2020 fantasy book by Andrea Stewart. It is the first book in the Drowning Empire trilogy. The book is about Lin, the emperor's daughter, who is trapped in a palace. When her father refuses to recognize her as heir to the throne, she vows to prove her worth by mastering the forbidden art of bone shard magic."
+      },
+      "details": {
+        "date": "2025-02-22T16:00",
+        "host": "Nathan",
+        "links": {
+          "discord": "https://www.discord.com",
+          "storygraph": "https://www.thestorygraph.com"
+        }
+      }
+    },
+    {
+      "book": {
+        "title": "Under the Whispering Door",
+        "author": "TJ Klune",
+        "isbn": "9781250217349",
+        "description": "Under the Whispering Door is a contemporary fantasy novel by T.J. Klune. It's about a ghost who refuses to cross over and the ferryman he falls in love with. The story explores themes of found family, self-discovery, and grief. Some say it's a charming standalone story that's hilarious, haunting, and kind."
+      },
+      "details": {
+        "date": "2025-04-22T16:00",
+        "host": "Bri",
+        "links": {
+          "discord": "https://www.discord.com",
+          "storygraph": "https://www.thestorygraph.com"
+        }
+      }
+    },
+    {
+      "book": {
+        "title": "What the River Knows",
+        "author": "Isabel Ibañez",
+        "isbn": "9781250803375",
+        "description": "What the River Knows is a historical fantasy novel by Isabel Ibañez. It's the first book in the Secrets of the Nile duology. The story is about Inez Olivera, a young heiress from Buenos Aires, who sets out to discover the truth about her parents' disappearance. The book explores themes of grief, trust, and colonialism. Some say the book is a \"love letter to history\" and a \"beautiful historical fiction\"."
+      },
+      "details": {
+        "date": "2025-04-22T16:00",
+        "host": "Megan",
+        "links": {
+          "discord": "https://www.discord.com",
+          "storygraph": "https://www.thestorygraph.com"
+        }
+      }
+    }
+  ]
+}
