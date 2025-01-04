@@ -7,6 +7,8 @@
   --dark-shadow: #212121;
   --dark-highlight: #484848;
 
+  --medium-shadow: #626262;
+
   --light-bg: #f5f5f5;
   --light-shadow: #d9d9d9;
   --light-highlight: #ffffff;
@@ -177,20 +179,58 @@ a:active {
   color: var(--link-active);
 }
 
+.link.discord:link,
+.link.discord:visited {
+  color: #5865f2;
+}
+
+.link.discord:hover {
+  color: #eb459e;
+}
+
+.storygraph-logo:link,
+.storygraph-logo:visited {
+  color: #5865f2;
+}
+
+.storygraph-logo {
+  width: 19px;
+  display: flex;
+}
+
+.link.storygraph:hover .storygraph-logo {
+  filter: drop-shadow(0px 1000px 0 var(--accent-text));
+  transform: translateY(-1000px);
+}
+
+body.light-mode .storygraph-logo {
+  filter: drop-shadow(0px 1000px 0 var(--medium-shadow));
+  transform: translateY(-1000px);
+}
+
+body.light-mode .link.storygraph:hover .storygraph-logo {
+  filter: drop-shadow(0px 1000px 0 var(--dark-shadow));
+  transform: translateY(-1000px);
+}
+
 /* Event Card Styles */
 .event-card__header {
   display: flex;
   justify-content: space-between;
-  align-items: flex-start;
+  align-items: baseline;
   flex-wrap: wrap;
   gap: 0.5rem;
 }
 
-.event-card__title {
+.event-card__title,
+.event-card__host {
   margin: 0;
   font-size: 1.5rem;
-  flex: 1;
   text-align: left;
+}
+
+.event-card__host {
+  font-size: 1rem;
 }
 
 .event-card__date,
@@ -205,7 +245,7 @@ a:active {
   gap: 0;
 }
 
-.event-card__location {
+.event-card__links {
   display: flex;
   align-items: center;
   gap: 0.5rem;
@@ -213,12 +253,14 @@ a:active {
   font-weight: bold;
 }
 
-.event-card__description {
+.event-card__book-description {
   margin: 1rem 0;
   line-height: 1.6;
+  white-space: pre-wrap;
+  padding: 1rem;
 }
 
-.event-card__menu {
+.event-card__book {
   margin-top: 1.5rem;
   padding-top: 1.5rem;
   border-top: 1px solid var(--dark-highlight);
@@ -247,7 +289,7 @@ body:not(.light-mode) .event-card__accent {
 
 .event-card__menu-items {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: no-wrap;
   gap: 0.5rem;
 }
 
@@ -256,7 +298,16 @@ body:not(.light-mode) .event-card__accent {
   padding: 0.4rem 0.8rem;
   border-radius: 20px;
   font-size: 0.9rem;
-  width: min-content
+  width: fit-content;
+  height: min-content;
+  margin-bottom: 0.5rem;
+}
+
+.book-details {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  align-content: flex-start;
 }
 
 /* Light mode styles */
@@ -282,6 +333,14 @@ body.light-mode .menu-item {
   .event-card__menu-items {
     flex-direction: column;
     align-items: center;
+    flex-wrap: wrap;
+  }
+
+  .book-details {
+    flex-direction: column;
+    align-items: center;
+    flex-wrap: wrap;
+    align-content: center;
   }
 
   .menu-item {

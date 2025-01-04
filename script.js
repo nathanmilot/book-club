@@ -8,7 +8,7 @@ function titleCase(str) {
     .join(" ");
 }
 
-function createEventCard(event) {
+function createEventHeader(event) {
   const eventDateTime = new Date(event.details.date);
   const formattedDate = new Intl.DateTimeFormat("en-US", {
     year: "numeric",
@@ -27,47 +27,60 @@ function createEventCard(event) {
   return `<div class="event-card">
       <div class="event-card__header">
         <div>  
-          <h2 class="event-card__title">${event.details.title}</h2>
-          <div class="event-card__location">
-            <i class="fa-solid fa-location-dot"></i>
-            <div>${event.details?.location ?? defaultLocation}</div>
-          </div>
+          <h2 class="event-card__title">${event?.book?.title?.length > 0 ? event.book.title : "TBD"}</h2>
+          <div class="event-card__host">Hosted by ${event.details.host}</div>
+          <div class="event-card__links">
+            <a class="link discord" href="${event.details.links.discord}" target="_blank"><i class="fa-brands fa-discord"></i></a>
+            <a class="link storygraph" href="${event.details.links.storygraph}" target="_blank"><img class="storygraph-logo" src="https://www.thestorygraph.com/assets/logo-white-15cb57f7a4673cdf300bdcb013bb5330457e5551ce7b0021b5bd5b1aa4f87d58.png"></a>
+         </div>
         </div>
         <div class="event-card__date">
           <i class="fas fa-calendar-days"></i>
           <div>
             <div class="event-card__accent">${formattedDate}</div>
-            <div class="event-card__accent">${formattedTime}</div>
+            <div class="event-card__accent">${formattedTime}</div> 
           </div>
-        </div>
-      </div>      
+          </div>
+          </div>
+      `;
+}
 
+function createBookElement(book) {
+  //   return `<div class="event-card__menu">
+  //     <div class="event-card__menu-header">
+  //       <i class="fa-solid fa-utensils"></i>      <span class="event-card__accent">This Month's Menu</span>
+  //     </div>
+  //     <div class="event-card__menu-items">
+  //       ${
+  //         book?.details?.length > 0
+  //           ? book.details
+  //               .map(function (item, index) {
+  //                 return `<span key=${index} class="menu-item">${titleCase(item)}</span>`;
+  //               })
+  //               .join("")
+  //           : `<span class="menu-item">TBD</span>`
+  //       }
+  //     </div >
+  //   </div >
+  // </div >`;
+  return `<div class="event-card__book">
+    <div class="event-card__menu-items">
       ${
-        event?.description && event?.description.length > 0
-          ? `<div class="event-card__description">
-          ${event?.description}
-        </div>`
-          : ``
-      }
+        book?.title?.length > 0
+          ? `<img class="book-cover" src="https://covers.openlibrary.org/b/isbn/${book?.isbn}-M.jpg"/><span class="book-details">${book?.author?.length  > 0 ? `<a href="https://www.google.com/search?q=${book.author}" target="_blank" class="menu-item">${titleCase(book.author)}</a>` :``}${book?.description?.length  > 0 ? `<span  class="menu-item">${titleCase(book.description)}</span></span>` :``}`
+          : `<span class="menu-item">TBD</span>`
+      } 
+      
+    </div >
+  </div >
+</div >`;
+}
 
-      ${`<div class="event-card__menu">
-          <div class="event-card__menu-header">
-            <i class="fa-solid fa-utensils"></i>
-            <span class="event-card__accent">This Month's Menu</span>
-          </div>
-          <div class="event-card__menu-items">
-            ${
-              event?.menu?.length > 0
-                ? event.menu
-                    .map(function (item, index) {
-                      return `<span key=${index} class="menu-item">${titleCase(item)}</span>`;
-                    })
-                    .join("")
-                : `<span class="menu-item">TBD</span>`
-            } 
-          </div >
-        </div >`}
-    </div > `;
+function createEventCard(event) {
+  const eventHeader = createEventHeader(event);
+  const bookElement = createBookElement(event?.book);
+
+  return `${eventHeader}${bookElement}`;
 }
 
 const systemPrefersDark = () =>
@@ -109,40 +122,16 @@ window
 // Path to the dynamically created secrets file
 const secretsPath = "./secrets.json";
 
-// Fetch the secrets JSON file
-fetch(secretsPath)
-  .then((response) => {
-    if (!response.ok) {
-      throw new Error("Failed to load secrets.json");
-    }
-    return response.json();
-  })
+fetch("./data/events.json")
+  .then((response) => response.json())
   .then((data) => {
-    // Update Google Calendar iframe
-    const calendar = document.getElementById("calendar");
-    if (calendar) {
-      const calendarOptions = "&mode=AGENDA&showPrint=0&showCalendars=0";
-      calendar.src = data.calendarUrl + calendarOptions;
-    }
+    const eventsList = document.getElementById("events-list");
 
-    // Update default location display
-    defaultLocation = decodeURIComponent(data.defaultLocation);
+    data.events.forEach((event) => {
+      const li = document.createElement("li");
+      li.classList.add("raised");
+      li.innerHTML = createEventCard(event);
+      eventsList.appendChild(li);
+    });
   })
-  .then(() => {
-    fetch("./data/events.json")
-      .then((response) => response.json())
-      .then((data) => {
-        const eventsList = document.getElementById("events-list");
-
-        data.events.forEach((event) => {
-          const li = document.createElement("li");
-          li.classList.add("raised");
-          li.innerHTML = createEventCard(event);
-          eventsList.appendChild(li);
-        });
-      })
-      .catch((error) => console.error("Error loading JSON:", error));
-  })
-  .catch((error) => {
-    console.error("Error loading secrets:", error);
-  });
+  .catch((error) => console.error("Error loading JSON:", error));
