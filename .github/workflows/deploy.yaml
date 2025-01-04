@@ -15,10 +15,10 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v3
 
-      # Step 2: Create the `secrets.json` file
-      - name: Create Secrets File
-        run: |
-          echo '{ "calendarUrl": "${{ secrets.CALENDAR_URL }}", "defaultLocation": "${{ secrets.DEFAULT_LOCATION }}" }' > secrets.json
+      # # Step 2: Create the `secrets.json` file
+      # - name: Create Secrets File
+      #   run: |
+      #     echo '{ "calendarUrl": "${{ secrets.CALENDAR_URL }}", "defaultLocation": "${{ secrets.DEFAULT_LOCATION }}" }' > secrets.json
 
       # Step 3: Deploy to GitHub Pages
       - name: Deploy to GitHub Pages
