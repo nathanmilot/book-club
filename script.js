@@ -27,7 +27,7 @@ function createEventHeader(event) {
   return `<div class="event-card">
       <div class="event-card__header">
         <div>  
-          <h2 class="event-card__title">${event?.book?.title?.length > 0 ? event.book.title : "TBD"}</h2>
+          <h2 class="event-card__title">${event?.book?.title?.length > 0 ? `<a href="https://audiobooks.milot.family/library/7ccd944b-d1d4-406d-8859-5e3db53e621e/search?q=${encodeURIComponent(event.book.title)}" target="_blank" >${event.book.title}</a>` : "TBD"}</h2>
           <div class="event-card__host">Hosted by ${event.details.host}</div>
           <div class="event-card__links">
             <a class="link discord" href="${event.details.links.discord}" target="_blank"><i class="fa-brands fa-discord"></i></a>

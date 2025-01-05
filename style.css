@@ -55,11 +55,6 @@ body.light-mode .fas {
 }
 
 .container {
-  background: var(--dark-bg);
-  border-radius: 20px;
-  box-shadow: 10px 10px 30px var(--dark-shadow),
-    -10px -10px 30px var(--dark-highlight);
-  padding: 1.5rem;
   margin: 1rem auto 3.5rem;
   max-width: 800px;
   display: grid;
@@ -82,7 +77,8 @@ ul#events-list {
     -5px -5px 15px var(--dark-highlight);
   margin: 0.5rem auto;
   padding: 1rem;
-  width: 80%;
+  max-width: 800px;
+  width: -webkit-fill-available;
   display: grid;
   align-content: center;
 }
@@ -120,7 +116,7 @@ iframe {
 .dark-mode-toggle {
   display: flex;
   justify-content: flex-end;
-  max-width: calc(800px + 3rem);
+  max-width: calc(800px );
   margin: auto auto 20px auto;
 }
 
