@@ -24,14 +24,29 @@ function createEventHeader(event) {
     timeZone: "America/New_York",
   }).format(eventDateTime);
 
+  const audiobookshelfLink = `https://audiobooks.milot.family/library/7ccd944b-d1d4-406d-8859-5e3db53e621e/search?q=${encodeURIComponent(
+    event.book.title
+  )}`;
+
   return `<div class="event-card">
       <div class="event-card__header">
         <div>  
-          <h2 class="event-card__title">${event?.book?.title?.length > 0 ? `<a href="https://audiobooks.milot.family/library/7ccd944b-d1d4-406d-8859-5e3db53e621e/search?q=${encodeURIComponent(event.book.title)}" target="_blank" >${event.book.title}</a>` : "TBD"}</h2>
+          <h2 class="event-card__title">${
+            event?.book?.title?.length > 0
+              ? `<a href="${audiobookshelfLink}" target="_blank" >${event.book.title}</a>`
+              : "TBD"
+          }</h2>
           <div class="event-card__host">Hosted by ${event.details.host}</div>
           <div class="event-card__links">
-            <a class="link discord" href="${event.details.links.discord}" target="_blank"><i class="fa-brands fa-discord"></i></a>
-            <a class="link storygraph" href="${event.details.links.storygraph}" target="_blank"><img class="storygraph-logo" src="https://www.thestorygraph.com/assets/logo-white-15cb57f7a4673cdf300bdcb013bb5330457e5551ce7b0021b5bd5b1aa4f87d58.png"></a>
+            <a class="link discord" href="${
+              event.details.links.discord
+            }" target="_blank"><i class="fa-brands fa-discord"></i></a>
+            
+            <a class="link storygraph" href="${
+              event.details.links.storygraph
+            }" target="_blank"><img class="storygraph-logo" src="https://www.thestorygraph.com/assets/logo-white-15cb57f7a4673cdf300bdcb013bb5330457e5551ce7b0021b5bd5b1aa4f87d58.png"></a>
+            
+            <a class="link audiobookshelf" href="${audiobookshelfLink}" target="_blank"><img class="audiobookshelf-logo" src="https://raw.githubusercontent.com/advplyr/audiobookshelf/refs/heads/master/client/static/icon.svg"></a>
          </div>
         </div>
         <div class="event-card__date">
@@ -46,28 +61,27 @@ function createEventHeader(event) {
 }
 
 function createBookElement(book) {
-  //   return `<div class="event-card__menu">
-  //     <div class="event-card__menu-header">
-  //       <i class="fa-solid fa-utensils"></i>      <span class="event-card__accent">This Month's Menu</span>
-  //     </div>
-  //     <div class="event-card__menu-items">
-  //       ${
-  //         book?.details?.length > 0
-  //           ? book.details
-  //               .map(function (item, index) {
-  //                 return `<span key=${index} class="menu-item">${titleCase(item)}</span>`;
-  //               })
-  //               .join("")
-  //           : `<span class="menu-item">TBD</span>`
-  //       }
-  //     </div >
-  //   </div >
-  // </div >`;
   return `<div class="event-card__book">
     <div class="event-card__menu-items">
       ${
         book?.title?.length > 0
-          ? `<img class="book-cover" src="https://covers.openlibrary.org/b/isbn/${book?.isbn}-M.jpg"/><span class="book-details">${book?.author?.length  > 0 ? `<a href="https://www.google.com/search?q=${book.author}" target="_blank" class="menu-item">${titleCase(book.author)}</a>` :``}${book?.description?.length  > 0 ? `<span  class="menu-item">${titleCase(book.description)}</span></span>` :``}`
+          ? `<img class="book-cover" src="https://covers.openlibrary.org/b/isbn/${
+              book?.isbn
+            }-M.jpg"/><span class="book-details">${
+              book?.author?.length > 0
+                ? `<a href="https://www.google.com/search?q=${
+                    book.author
+                  }" target="_blank" class="menu-item">${titleCase(
+                    book.author
+                  )}</a>`
+                : ``
+            }${
+              book?.description?.length > 0
+                ? `<span  class="menu-item">${titleCase(
+                    book.description
+                  )}</span></span>`
+                : ``
+            }`
           : `<span class="menu-item">TBD</span>`
       } 
       
