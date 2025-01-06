@@ -267,18 +267,6 @@ body.light-mode .link.storygraph:hover .storygraph-logo {
   border-top: 1px solid var(--dark-highlight);
 }
 
-body.light-mode .event-card__menu {
-  margin-top: 1.5rem;
-  padding-top: 1.5rem;
-  border-top: 1px solid var(--light-shadow);
-}
-
-.event-card__menu-header {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  margin-bottom: 1rem;
-}
 
 body:not(.light-mode) .event-card__accent {
   color: var(--accent-text);
@@ -288,13 +276,13 @@ body:not(.light-mode) .event-card__accent {
   font-weight: bold;
 }
 
-.event-card__menu-items {
+.event-card__book-items {
   display: flex;
   flex-wrap: no-wrap;
   gap: 0.5rem;
 }
 
-.menu-item {
+.book-item {
   background: var(--dark-highlight);
   padding: 0.4rem 0.8rem;
   border-radius: 20px;
@@ -302,6 +290,10 @@ body:not(.light-mode) .event-card__accent {
   width: fit-content;
   height: min-content;
   margin-bottom: 0.5rem;
+}
+
+.book-cover {
+  border-radius: 1rem;
 }
 
 .book-details {
@@ -316,7 +308,7 @@ body.light-mode .event-card {
   background: var(--light-bg);
 }
 
-body.light-mode .menu-item {
+body.light-mode .book-item {
   background: var(--light-highlight);
 }
 
@@ -331,7 +323,7 @@ body.light-mode .menu-item {
     font-size: 1.25rem;
   }
 
-  .event-card__menu-items {
+  .event-card__book-items {
     flex-direction: column;
     align-items: center;
     flex-wrap: wrap;
@@ -344,7 +336,7 @@ body.light-mode .menu-item {
     align-content: center;
   }
 
-  .menu-item {
+  .book-item {
     width: 75%;
   }
 

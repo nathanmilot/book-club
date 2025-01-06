@@ -73,25 +73,25 @@ function createBookElement(book) {
     bookCover = `<img class="book-cover" src="${coverLink}"/>`;
   }
   return `<div class="event-card__book">
-    <div class="event-card__menu-items">
+    <div class="event-card__book-items">
       ${
         book?.title?.length > 0
           ? `${bookCover}<span class="book-details">${
               book?.author?.length > 0
                 ? `<a href="https://www.google.com/search?q=${
                     book.author
-                  }" target="_blank" class="menu-item">${titleCase(
+                  }" target="_blank" class="book-item">${titleCase(
                     book.author
                   )}</a>`
                 : ``
             }${
               book?.description?.length > 0
-                ? `<span  class="menu-item">${titleCase(
+                ? `<span  class="book-item">${titleCase(
                     book.description
                   )}</span></span>`
                 : ``
             }`
-          : `<span class="menu-item">TBD</span>`
+          : `<span class="book-item">TBD</span>`
       } 
       
     </div >
