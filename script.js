@@ -61,13 +61,22 @@ function createEventHeader(event) {
 }
 
 function createBookElement(book) {
+  var bookCover = "";
+  if (book?.isbn) {
+    const coverLink = `https://covers.openlibrary.org/b/isbn/${book?.isbn}-M.jpg`;
+    const el = document.createElement("link");
+    el.setAttribute("rel", "preload");
+    el.setAttribute("href", coverLink);
+    el.setAttribute("as", "image");
+    document.head.appendChild(el);
+
+    bookCover = `<img class="book-cover" src="${coverLink}"/>`;
+  }
   return `<div class="event-card__book">
     <div class="event-card__menu-items">
       ${
         book?.title?.length > 0
-          ? `<img class="book-cover" src="https://covers.openlibrary.org/b/isbn/${
-              book?.isbn
-            }-M.jpg"/><span class="book-details">${
+          ? `${bookCover}<span class="book-details">${
               book?.author?.length > 0
                 ? `<a href="https://www.google.com/search?q=${
                     book.author
