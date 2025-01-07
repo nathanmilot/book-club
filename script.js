@@ -2,11 +2,21 @@ var defaultLocation = "";
 
 function titleCase(str) {
   return str
-    .toLowerCase()
-    .split(" ")
-    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-    .join(" ");
+    ?.toLowerCase()
+    ?.split(" ")
+    ?.map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    ?.join(" ");
 }
+
+function dashCase(str) {
+  return str
+    ?.toLowerCase()
+    ?.split(" ")
+    ?.map((word) => word.charAt(0).toLowerCase() + word.slice(1))
+    ?.join("-");
+}
+
+const newEl = (tag, prop) => Object.assign(document.createElement(tag), prop);
 
 function createEventHeader(event) {
   const eventDateTime = new Date(event.details.date);
@@ -61,22 +71,63 @@ function createEventHeader(event) {
 }
 
 function createBookElement(book) {
-  var bookCover = "";
   if (book?.isbn) {
     const coverLink = `https://covers.openlibrary.org/b/isbn/${book?.isbn}-M.jpg`;
-    const el = document.createElement("link");
-    el.setAttribute("rel", "preload");
-    el.setAttribute("href", coverLink);
-    el.setAttribute("as", "image");
+    const el = newEl("link", {
+      rel: "preload",
+      href: coverLink,
+      as: "image",
+    });
     document.head.appendChild(el);
 
-    bookCover = `<img class="book-cover" src="${coverLink}"/>`;
+    return getOpenLibraryData(book.isbn).then((data) => {
+      // Construct book elements
+      const bookCover = newEl("img", {
+        className: "book-cover",
+        src: coverLink,
+      });
+      const bookEl = newEl("div", {
+        className: "event-card__book",
+      });
+      const bookItems = newEl("div", { className: "event-card__book-items" });
+      const bookDetails = newEl("div", { className: "book-details" });
+      const bookTags = newEl("div", { className: "book-tags" });
+      const bookAuthor = newEl("a", {
+        className: "book-item",
+        href: `https://www.google.com/search?q=${book?.author}`,
+        target: "_blank",
+        innerText: titleCase(book?.author),
+      });
+      const desc = data.description.value; // book?.description
+      var converter = new showdown.Converter();
+      var markHtml = converter.makeHtml(desc);
+
+      const bookDesc = newEl("div", {
+        className: "book-item",
+        innerHTML: markHtml,
+      });
+
+      data?.subjects && Object.entries(data?.subjects)?.forEach((val) => {
+        bookTags.appendChild(newEl("div", {className: "book-item", innerText: `#${dashCase(val[1])}`}));
+      });
+
+      // Build book element structure
+      book?.author.length > 0 && bookDetails.appendChild(bookAuthor);
+      bookDetails.appendChild(bookDesc);
+      bookDetails.appendChild(bookTags);
+
+      bookItems.appendChild(bookCover);
+      bookItems.appendChild(bookDetails);
+
+      bookEl.appendChild(bookItems);
+      return bookEl;
+    });
   }
   return `<div class="event-card__book">
     <div class="event-card__book-items">
       ${
         book?.title?.length > 0
-          ? `${bookCover}<span class="book-details">${
+          ? `<span class="book-details">${
               book?.author?.length > 0
                 ? `<a href="https://www.google.com/search?q=${
                     book.author
@@ -99,11 +150,10 @@ function createBookElement(book) {
 </div >`;
 }
 
-function createEventCard(event) {
+async function createEventCard(event) {
   const eventHeader = createEventHeader(event);
-  const bookElement = createBookElement(event?.book);
-
-  return `${eventHeader}${bookElement}`;
+  const bookElement = await createBookElement(event?.book);
+  return `${eventHeader}${bookElement?.outerHTML || bookElement}`;
 }
 
 const systemPrefersDark = () =>
@@ -151,10 +201,34 @@ fetch("./data/events.json")
     const eventsList = document.getElementById("events-list");
 
     data.events.forEach((event) => {
-      const li = document.createElement("li");
-      li.classList.add("raised");
-      li.innerHTML = createEventCard(event);
+      const li = newEl("li", { className: "raised" });
+      (async () => {
+        li.innerHTML = await createEventCard(event);
+      })();
       eventsList.appendChild(li);
     });
   })
   .catch((error) => console.error("Error loading JSON:", error));
+
+async function getOpenLibraryData(isbn) {
+  const url = `https://openlibrary.org/search.json?q=isbn:${isbn}&limit=1.json`;
+
+  return fetch(url)
+    .then((response) => response.json())
+    .then((data) => {
+      const workId = data?.docs[0]?.key;
+      if (workId) {
+        return fetch(`https://openlibrary.org${workId}.json`)
+          .then((response) => response.json())
+          .then((data) => {
+            return data;
+          })
+          .catch((error) => console.error("Failed to get book data:", error));
+      } else {
+        console.error(`Failed to find open library works for isbn ${isbn}`);
+      }
+    })
+    .catch((error) => {
+      console.error("Failed to look up book information:", error);
+    });
+}
