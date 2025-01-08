@@ -94,11 +94,16 @@ function createBookElement(book) {
       const bookTags = newEl("div", { className: "book-tags" });
       const bookAuthor = newEl("a", {
         className: "book-item",
-        href: `https://www.google.com/search?q=${book?.author}`,
+        href: `${
+          data?.authors[0]?.author?.key
+            ? `https://openlibrary.org${data.authors[0].author.key}`
+            : `https://www.google.com/search?q=${book?.author}`
+        }`,
         target: "_blank",
         innerText: titleCase(book?.author),
       });
-      const desc = data.description.value; // book?.description
+      // console.log(data);
+      const desc = data.description.value;
       var converter = new showdown.Converter();
       var markHtml = converter.makeHtml(desc);
 
@@ -107,9 +112,15 @@ function createBookElement(book) {
         innerHTML: markHtml,
       });
 
-      data?.subjects && Object.entries(data?.subjects)?.forEach((val) => {
-        bookTags.appendChild(newEl("div", {className: "book-item", innerText: `#${dashCase(val[1])}`}));
-      });
+      data?.subjects &&
+        Object.entries(data?.subjects)?.forEach((val) => {
+          bookTags.appendChild(
+            newEl("div", {
+              className: "book-item",
+              innerText: `#${dashCase(val[1])}`,
+            })
+          );
+        });
 
       // Build book element structure
       book?.author.length > 0 && bookDetails.appendChild(bookAuthor);
