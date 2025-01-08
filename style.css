@@ -1,7 +1,10 @@
 :root {
   --light-text: #e0e0e0;
   --dark-text: #333;
-  --accent-text: #7dba84;
+
+  --accent-color: #7dba84;
+  --accent-shadow: #5d7460;
+  --accent-highlight: #b6e7bc;
 
   --dark-bg: #303030;
   --dark-shadow: #212121;
@@ -14,7 +17,7 @@
   --light-highlight: #ffffff;
 
   --link-color: lightskyblue;
-  --link-visited: var(--accent-text);
+  --link-visited: var(--accent-color);
   --link-hover: #4d9455;
   --link-active: #ff4040;
 }
@@ -36,7 +39,7 @@ body.light-mode {
 
 h1,
 h2 {
-  color: var(--accent-text);
+  color: var(--accent-color);
   text-align: center;
   margin: 0 auto 0.5rem auto;
 }
@@ -81,6 +84,27 @@ ul#events-list {
   width: -webkit-fill-available;
   display: grid;
   align-content: center;
+}
+
+.raised:has(.past) {
+  display: none;
+}
+
+.raised:has(.current) {
+  background: var(--dark-highlight);
+}
+
+body:not(.light-mode) .raised:has(.current) .menu-item {
+  background: var(--dark-bg);
+}
+
+body.light-mode .raised:has(.current) {
+  background: var(--accent-color);
+}
+
+body.light-mode .raised:has(.current) {
+  box-shadow: 5px 5px 15px var(--accent-shadow),
+    -5px -5px 15px var(--accent-highlight);
 }
 
 button {
@@ -184,34 +208,34 @@ a:active {
   color: #eb459e;
 }
 
-.storygraph-logo:link,
-.storygraph-logo:visited {
-  color: #5865f2;
-}
-
 .storygraph-logo,
 .audiobookshelf-logo {
   width: 19px;
   display: flex;
 }
 
+.storygraph-logo {
+  filter: brightness(0.8);
+}
+
 .link.storygraph:hover .storygraph-logo {
-  filter: drop-shadow(0px 1000px 0 var(--accent-text));
-  transform: translateY(-1000px);
+  filter: saturate(2);
+}
+
+body.light-mode .current .storygraph-logo {
+  filter: brightness(1);
 }
 
 body.light-mode .storygraph-logo {
-  filter: drop-shadow(0px 1000px 0 var(--medium-shadow));
-  transform: translateY(-1000px);
+  filter: brightness(.3);
+}
+
+body.light-mode .link.storygraph:hover .storygraph-logo {
+  filter: brightness(0.5);
 }
 
 .link.audiobookshelf:hover .audiobookshelf-logo {
   filter: saturate(2);
-}
-
-body.light-mode .link.storygraph:hover .storygraph-logo {
-  filter: drop-shadow(0px 1000px 0 var(--dark-shadow));
-  transform: translateY(-1000px);
 }
 
 /* Event Card Styles */
@@ -267,8 +291,18 @@ body.light-mode .link.storygraph:hover .storygraph-logo {
   border-top: 1px solid var(--dark-highlight);
 }
 
+.event-card__book {
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--dark-highlight);
+}
+
+body:not(.light-mode) .raised:has(.current) .event-card__book {
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--dark-bg);
+}
+
 body:not(.light-mode) .event-card__accent {
-  color: var(--accent-text);
+  color: var(--accent-color);
 }
 
 .event-card__accent {
@@ -292,9 +326,14 @@ body:not(.light-mode) .event-card__accent {
   margin-bottom: 0.5rem;
 }
 
+.current .book-item {
+  background-color: var(--dark-bg);
+}
+
 .book-cover {
   border-radius: 1rem;
   height: fit-content;
+  width: -webkit-fill-available;
 }
 
 .book-details {
@@ -315,7 +354,7 @@ body:not(.light-mode) .event-card__accent {
 }
 
 .book-tags .book-item {
-  background-color: var(--accent-text);
+  background-color: var(--accent-color);
   color: var(--dark-text);
   font-weight: bold;
 }
@@ -326,12 +365,22 @@ body.light-mode .book-tags .book-item {
 }
 
 /* Light mode styles */
-body.light-mode .event-card {
-  background: var(--light-bg);
-}
 
 body.light-mode .book-item {
   background: var(--light-highlight);
+}
+
+body.light-mode .current .book-item {
+  background: var(--accent-highlight);
+}
+
+body.light-mode .current .book-tags .book-item {
+  color: var(--dark-text)
+}
+
+.event-card__book-items>.book-item {
+  font-weight: bold;
+  font-size: large;
 }
 
 /* Responsive styles */
@@ -358,8 +407,8 @@ body.light-mode .book-item {
     align-content: center;
   }
 
-  .book-item {
-    width: 75%;
+  .book-cover, .book-item, .book-tags {
+    width: -webkit-fill-available;
   }
 
   .book-tags {
@@ -383,7 +432,7 @@ body.light-mode .book-item {
 
 /* Handle */
 ::-webkit-scrollbar-thumb {
-  background: var(--accent-text);
+  background: var(--accent-color);
   border-radius: 50px;
   background-clip: content-box;
   border: solid transparent 7px;

@@ -1,4 +1,5 @@
 var defaultLocation = "";
+var foundCurrent = false;
 
 function titleCase(str) {
   return str
@@ -19,7 +20,29 @@ function dashCase(str) {
 const newEl = (tag, prop) => Object.assign(document.createElement(tag), prop);
 
 function createEventHeader(event) {
+  var otherClass = "";
+  const today = new Date();
   const eventDateTime = new Date(event.details.date);
+
+  if (
+    (today.getFullYear() <= eventDateTime.getFullYear() &&
+      today.getMonth() == eventDateTime.getMonth() &&
+      today.getDate() <= eventDateTime.getDate()) ||
+    (today.getFullYear() <= eventDateTime.getFullYear() &&
+      today.getMonth() < eventDateTime.getMonth() &&
+      !foundCurrent)
+  ) {
+    otherClass = "current";
+    foundCurrent = true;
+  } else if (
+    today.getFullYear() > eventDateTime.getFullYear() ||
+    today.getMonth() > eventDateTime.getMonth() ||
+    (today.getMonth() == eventDateTime.getMonth() &&
+      today.getDate() > eventDateTime.getDate())
+  ) {
+    otherClass = "past";
+  }
+
   const formattedDate = new Intl.DateTimeFormat("en-US", {
     year: "numeric",
     month: "long",
@@ -38,7 +61,7 @@ function createEventHeader(event) {
     event.book.title
   )}`;
 
-  return `<div class="event-card">
+  return `<div class="event-card${otherClass ? " " + otherClass : ""}">
       <div class="event-card__header">
         <div>  
           <h2 class="event-card__title">${
