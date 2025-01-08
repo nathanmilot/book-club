@@ -95,7 +95,7 @@ function createEventHeader(event) {
 
 function createBookElement(book) {
   if (book?.isbn) {
-    const coverLink = `https://covers.openlibrary.org/b/isbn/${book?.isbn}-M.jpg`;
+    const coverLink = `https://covers.openlibrary.org/b/isbn/${book?.isbn}-L.jpg`;
     const el = newEl("link", {
       rel: "preload",
       href: coverLink,
