@@ -65,7 +65,7 @@ body.light-mode .fas {
   scroll-snap-type: y mandatory;
   scroll-padding: 1.5rem;
   width: fit-content;
-  max-height: 85vh;
+  max-height: 88vh;
   margin: auto;
   gap: 20px;
   list-style: none;
