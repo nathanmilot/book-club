@@ -19,7 +19,11 @@
       <i id="toggle-icon" class="fas"></i>
     </button>
   </div>
-    <ul class="container" id="events-list"></ul>
+  <div class="wrapper hidden" onclick="hidePlayer()">
+    <button class="close-button" onclick="hidePlayer()"><i class="fas fa-circle-xmark"></i></button>
+    <iframe class="player"></iframe>
+  </div>
+  <ul class="container" id="events-list"></ul>
   <script src="script.js"></script>
 </body>
 </html>
