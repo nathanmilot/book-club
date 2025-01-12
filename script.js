@@ -19,6 +19,19 @@ function dashCase(str) {
 
 const newEl = (tag, prop) => Object.assign(document.createElement(tag), prop);
 
+function openPlayer(link) {
+  const player = document.querySelector(".player");
+  player.src = link;
+
+  const playerWrapper = document.querySelector(".wrapper.hidden");
+  playerWrapper?.classList.remove("hidden");
+}
+
+function hidePlayer() {
+  const playerWrapper = document.querySelector(".wrapper");
+  playerWrapper?.classList.add("hidden");
+}
+
 function createEventHeader(event) {
   var otherClass = "";
   const today = new Date();
@@ -93,7 +106,8 @@ function createEventHeader(event) {
       `;
 }
 
-function createBookElement(book) {
+function createBookElement(event) {
+  const book = event?.book;
   if (book?.isbn) {
     const coverLink = `https://covers.openlibrary.org/b/isbn/${book?.isbn}-L.jpg`;
     const el = newEl("link", {
@@ -103,12 +117,32 @@ function createBookElement(book) {
     });
     document.head.appendChild(el);
 
+    const audiobookshelfLink = `https://audiobooks.milot.family/library/7ccd944b-d1d4-406d-8859-5e3db53e621e/search?q=${encodeURIComponent(
+      event.book.title
+    )}`;
+
     return getOpenLibraryData(book.isbn).then((data) => {
       // Construct book elements
       const bookCover = newEl("img", {
         className: "book-cover",
         src: coverLink,
       });
+      const bookCoverWrapper = newEl("div", {
+        className: "book-cover-wrapper",
+      });
+      const playButton = newEl("button", {
+        className: "play-button",
+      });
+      playButton.setAttribute(
+        "onclick",
+        `openPlayer('${
+          event?.details?.links?.audiobookshelf ?? audiobookshelfLink
+        }')`
+      );
+      const playIcon = newEl("i", { className: "fas fa-circle-play" });
+      playButton.appendChild(playIcon);
+      bookCoverWrapper.appendChild(playButton);
+      bookCoverWrapper.appendChild(bookCover);
       const bookEl = newEl("div", {
         className: "event-card__book",
       });
@@ -150,7 +184,7 @@ function createBookElement(book) {
       bookDetails.appendChild(bookDesc);
       bookDetails.appendChild(bookTags);
 
-      bookItems.appendChild(bookCover);
+      bookItems.appendChild(bookCoverWrapper);
       bookItems.appendChild(bookDetails);
 
       bookEl.appendChild(bookItems);
@@ -186,7 +220,7 @@ function createBookElement(book) {
 
 async function createEventCard(event) {
   const eventHeader = createEventHeader(event);
-  const bookElement = await createBookElement(event?.book);
+  const bookElement = await createBookElement(event);
   return `${eventHeader}${bookElement?.outerHTML || bookElement}`;
 }
 
