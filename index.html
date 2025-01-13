@@ -1,29 +1,60 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Book Club</title>
-  <link rel="stylesheet" href="style.css">
-  <link rel="icon" href="book-solid.svg">
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.0/css/all.min.css">
-  <script src="https://unpkg.com/showdown/dist/showdown.min.js"></script>
-  <link rel="preload" href="https://www.thestorygraph.com/assets/logo-white-15cb57f7a4673cdf300bdcb013bb5330457e5551ce7b0021b5bd5b1aa4f87d58.png" as="image">
-  <link rel="preload" href="https://raw.githubusercontent.com/advplyr/audiobookshelf/refs/heads/master/client/static/icon.svg" as="image">
-  </script>  
-</head>
-<body>
-  <div class="dark-mode-toggle">
-    <button onclick="toggleMode()">
-      <i id="toggle-icon" class="fas"></i>
-    </button>
-  </div>
-  <div class="wrapper hidden" onclick="hidePlayer()">
-    <button class="close-button" onclick="hidePlayer()"><i class="fas fa-circle-xmark"></i></button>
-    <iframe class="player"></iframe>
-  </div>
-  <ul class="container" id="events-list"></ul>
-  <script src="script.js"></script>
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Book Club</title>
+    <link rel="stylesheet" href="style.css" />
+    <link rel="icon" href="book-solid.svg" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.0/css/all.min.css"
+    />
+    <script src="https://unpkg.com/showdown/dist/showdown.min.js"></script>
+    <link
+      rel="preload"
+      href="https://www.thestorygraph.com/assets/logo-white-15cb57f7a4673cdf300bdcb013bb5330457e5551ce7b0021b5bd5b1aa4f87d58.png"
+      as="image"
+    />
+    <link
+      rel="preload"
+      href="https://raw.githubusercontent.com/advplyr/audiobookshelf/refs/heads/master/client/static/icon.svg"
+      as="image"
+    />
+    <link rel="manifest" href="/manifest.json" />
+    <script>
+      if ("serviceWorker" in navigator) {
+        navigator.serviceWorker
+          .register("/sw.js")
+          .then((registration) => {
+            console.log(
+              "Service Worker registered with scope:",
+              registration.scope
+            );
+          })
+          .catch((error) => {
+            console.error("Service Worker registration failed:", error);
+          });
+      }
+    </script>
+  </head>
+  <body>
+    <div class="dark-mode-toggle">
+      <button onclick="toggleMode()">
+        <i id="toggle-icon" class="fas"></i>
+      </button>
+    </div>
+    <div class="wrapper hidden" onclick="hidePlayer()">
+      <button class="close-button" onclick="hidePlayer()">
+        <i class="fas fa-circle-xmark"></i>
+      </button>
+      <iframe class="player"></iframe>
+    </div>
+    <ul class="container" id="events-list"></ul>
+    <script src="script.js"></script>
+  </body>
 </html>
