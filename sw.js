@@ -3,18 +3,17 @@ const DYNAMIC_CACHE_NAME = "dynamic-cache-v1";
 
 // List of core assets to pre-cache
 const STATIC_ASSETS = [
-  "/",
   "/index.html",
-  "/styles.css",
+  "/style.css",
   "/script.js",
-  "/book-solid.svg",
-  "/book-solid.png",
-  "/book-solid-512.png",
+  "/images/audiobookshelf-logo.svg",
+  "/images/book-solid-512.png",
+  "/images/book-solid.png",
+  "/images/book-solid.svg",
+  "/images/story-graph-logo.png",
   "/data/events.json",
   "https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap",
-  "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.0/css/all.min.css",
-  "https://www.thestorygraph.com/assets/logo-white-15cb57f7a4673cdf300bdcb013bb5330457e5551ce7b0021b5bd5b1aa4f87d58.png",
-  "https://raw.githubusercontent.com/advplyr/audiobookshelf/refs/heads/master/client/static/icon.svg",
+  "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.0/css/all.min.css"
 ];
 
 // Install event - Pre-cache static assets

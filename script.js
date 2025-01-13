@@ -90,9 +90,9 @@ function createEventHeader(event) {
             
             <a class="link storygraph" href="${
               event.details.links.storygraph
-            }" target="_blank"><img class="storygraph-logo" src="https://www.thestorygraph.com/assets/logo-white-15cb57f7a4673cdf300bdcb013bb5330457e5551ce7b0021b5bd5b1aa4f87d58.png"></a>
+            }" target="_blank"><img class="storygraph-logo" src="/images/story-graph-logo.png"></a>
             
-            <a class="link audiobookshelf" href="${audiobookshelfLink}" target="_blank"><img class="audiobookshelf-logo" src="https://raw.githubusercontent.com/advplyr/audiobookshelf/refs/heads/master/client/static/icon.svg"></a>
+            <a class="link audiobookshelf" href="${audiobookshelfLink}" target="_blank"><img class="audiobookshelf-logo" src="/images/audiobookshelf-logo.svg"></a>
          </div>
         </div>
         <div class="event-card__date">
