@@ -1,6 +1,6 @@
 {
     "name": "Book Club",
-    "short_name": "PWA",
+    "short_name": "Book Club",
     "start_url": "/index.html",
     "display": "standalone",
     "background_color": "#303030",
