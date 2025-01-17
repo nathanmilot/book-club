@@ -131,7 +131,7 @@ function createBookElement(event) {
         className: "book-cover-wrapper",
       });
       const playButton = newEl("button", {
-        className: "play-button",
+        classList: "play-button hidden",
       });
       playButton.setAttribute(
         "onclick",
@@ -139,6 +139,14 @@ function createBookElement(event) {
           event?.details?.links?.audiobookshelf ?? audiobookshelfLink
         }')`
       );
+      bookCover.onload = function () {
+        covers = Array.from(document.querySelectorAll(".book-cover"));
+        covers.forEach((cover) => {
+          if (cover.src == coverLink) {
+            cover.previousElementSibling.classList.remove("hidden");
+          }
+        });
+      };
       const playIcon = newEl("i", { className: "fas fa-circle-play" });
       playButton.appendChild(playIcon);
       bookCoverWrapper.appendChild(playButton);
@@ -160,7 +168,7 @@ function createBookElement(event) {
         innerText: titleCase(book?.author),
       });
       // console.log(data);
-      const desc = data.description.value;
+      const desc = data?.description?.value;
       var converter = new showdown.Converter();
       var markHtml = converter.makeHtml(desc);
 
@@ -181,7 +189,7 @@ function createBookElement(event) {
 
       // Build book element structure
       book?.author.length > 0 && bookDetails.appendChild(bookAuthor);
-      bookDetails.appendChild(bookDesc);
+      if (desc?.length > 0) bookDetails.appendChild(bookDesc);
       bookDetails.appendChild(bookTags);
 
       bookItems.appendChild(bookCoverWrapper);

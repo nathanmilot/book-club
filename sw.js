@@ -11,7 +11,6 @@ const STATIC_ASSETS = [
   "/images/book-solid.png",
   "/images/book-solid.svg",
   "/images/story-graph-logo.png",
-  "/data/events.json",
   "https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap",
   "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.0/css/all.min.css"
 ];
