@@ -44,7 +44,7 @@ self.addEventListener("activate", (event) => {
   );
 });
 
-// Fetch event - Cache-first for static assets, dynamic cache for external URLs
+// Fetch event - Cache-first for static assets, stale-while-revalidate for external URLs
 self.addEventListener("fetch", (event) => {
   const requestUrl = new URL(event.request.url);
 
@@ -66,19 +66,25 @@ self.addEventListener("fetch", (event) => {
     return;
   }
 
-  // Dynamic caching for external URLs (e.g., APIs or external resources)
+  // Stale-while-revalidate for external URLs (e.g., APIs or external resources)
   if (requestUrl.origin !== location.origin) {
     event.respondWith(
       caches.match(event.request).then((cachedResponse) => {
-        return (
-          cachedResponse ||
-          fetch(event.request).then((networkResponse) => {
-            return caches.open(DYNAMIC_CACHE_NAME).then((cache) => {
+        // Always return the cached response immediately if available
+        const fetchPromise = fetch(event.request)
+          .then((networkResponse) => {
+            // Update the dynamic cache with the latest response
+            caches.open(DYNAMIC_CACHE_NAME).then((cache) => {
               cache.put(event.request, networkResponse.clone());
-              return networkResponse;
             });
+            return networkResponse;
           })
-        );
+          .catch(() => {
+            console.log("Network request failed. Using cached response.");
+          });
+
+        // Return the cached response or wait for fetch to complete
+        return cachedResponse || fetchPromise;
       })
     );
     return;

@@ -19,7 +19,10 @@ function dashCase(str) {
 }
 
 function sanitizeTag(str) {
-  let result = str.split(/[,&:]/);
+  let result = str.split(/[,&]/);
+  if (str.match(/nyt:.*=/g)) {
+    return "";
+  }
   return result;
 }
 
