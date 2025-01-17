@@ -11,10 +11,16 @@ function titleCase(str) {
 
 function dashCase(str) {
   return str
+    ?.trim()
     ?.toLowerCase()
     ?.split(" ")
     ?.map((word) => word.charAt(0).toLowerCase() + word.slice(1))
     ?.join("-");
+}
+
+function sanitizeTag(str) {
+  let result = str.split(/[,&:]/);
+  return result;
 }
 
 const newEl = (tag, prop) => Object.assign(document.createElement(tag), prop);
@@ -179,12 +185,15 @@ function createBookElement(event) {
 
       data?.subjects &&
         Object.entries(data?.subjects)?.forEach((val) => {
-          bookTags.appendChild(
-            newEl("div", {
-              className: "book-item",
-              innerText: `#${dashCase(val[1])}`,
-            })
-          );
+          const sanitized = Array.from(sanitizeTag(val[1]));
+          sanitized.forEach((tag) => {
+            bookTags.appendChild(
+              newEl("div", {
+                className: "book-item",
+                innerText: `#${dashCase(tag)}`,
+              })
+            );
+          });
         });
 
       // Build book element structure
