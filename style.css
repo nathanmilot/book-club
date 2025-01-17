@@ -98,6 +98,10 @@ body.light-mode .fas {
   font-size: 5rem;
 }
 
+:not(.book-cover-wrapper:has(.book-cover)) > .play-button {
+  display: none;
+}
+
 .close-button {
   position: fixed;
   border-radius: 50px;
@@ -466,6 +470,7 @@ body.light-mode .current .book-tags .book-item {
 .event-card__book-items > .book-item {
   font-weight: bold;
   font-size: large;
+  text-align: center;
 }
 
 /* Responsive styles */
