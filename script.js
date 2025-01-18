@@ -29,23 +29,27 @@ function sanitizeTag(str) {
 const newEl = (tag, prop) => Object.assign(document.createElement(tag), prop);
 
 let startY = 0;
+let containerScrollTop = 0;
 let isPulling = false;
 // const content = document.getElementById("content");
 
 document.body.addEventListener("touchstart", (e) => {
   startY = e.touches[0].clientY; // Record the initial touch position
+  containerScrollTop= document.querySelector(".container").scrollTop;
   isPulling = false; // Reset the pulling state
-  console.log("touch start");
+  // console.log("touch start");
 });
 
 document.body.addEventListener("touchmove", (e) => {
   const currentY = e.touches[0].clientY;
-
+  // console.log(document.querySelector(".container").scrollTop);
   // Check if the user is pulling down, the scroll position is at the top, and they've pulled far enough
-  if (currentY > startY + 50 && document.body.scrollTop === 0) {
-    isPulling = true; // Set the pulling state
-  }
-  console.log("touch move");
+
+  isPulling =
+    currentY > startY + 50 &&
+    containerScrollTop <= 10; // Set the pulling state
+
+  // console.log("touch move");
 });
 
 document.body.addEventListener("touchend", () => {
@@ -53,7 +57,7 @@ document.body.addEventListener("touchend", () => {
     // Reload the entire page when the gesture is completed
     location.reload();
   }
-  console.log("touch end");
+  // console.log("touch end");
 });
 
 function openPlayer(link) {
