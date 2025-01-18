@@ -1,91 +1,96 @@
-const STATIC_CACHE_NAME = "static-cache-v1";
-const DYNAMIC_CACHE_NAME = "dynamic-cache-v1";
+const STATIC_CACHE = "static-cache";
+const DYNAMIC_CACHE = "dynamic-cache";
 
 // List of core assets to pre-cache
 const STATIC_ASSETS = [
+  "/",
   "/index.html",
   "/style.css",
   "/script.js",
+  "/data/events.json",
   "/images/audiobookshelf-logo.svg",
   "/images/book-solid-512.png",
   "/images/book-solid.png",
   "/images/book-solid.svg",
   "/images/story-graph-logo.png",
   "https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap",
-  "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.0/css/all.min.css"
+  "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.0/css/all.min.css",
 ];
 
-// Install event - Pre-cache static assets
-self.addEventListener("install", (event) => {
-  event.waitUntil(
-    caches.open(STATIC_CACHE_NAME).then((cache) => {
-      console.log("Pre-caching static assets...");
-      return cache.addAll(STATIC_ASSETS);
-    })
-  );
+// Install event - Compare and update static cache
+self.addEventListener("install", async () => {
+  updateStaticAssets();
 });
 
-// Activate event - Clean up old caches
-self.addEventListener("activate", (event) => {
-  event.waitUntil(
-    caches.keys().then((cacheNames) => {
-      return Promise.all(
-        cacheNames.map((cacheName) => {
-          if (
-            cacheName !== STATIC_CACHE_NAME &&
-            cacheName !== DYNAMIC_CACHE_NAME
-          ) {
-            console.log("Deleting old cache:", cacheName);
-            return caches.delete(cacheName);
-          }
-        })
-      );
-    })
-  );
-});
+async function updateStaticAssets() {
+  const updatePromises = STATIC_ASSETS.map(async (url) => {
+    updateStaticCache(url);
+  });
+  await Promise.all(updatePromises);
+  self.skipWaiting();
+}
 
-// Fetch event - Cache-first for static assets, dynamic cache for external URLs
+setInterval(updateStaticAssets, 30000);
+
+async function updateStaticCache(url) {
+  const cache = await caches.open(STATIC_CACHE);
+  const cachedResponse = await caches.match(url);
+  const networkResponse = await fetch(url, { cache: "reload" });
+
+  if (networkResponse.ok) {
+    if (cachedResponse) {
+      const cachedText = await cachedResponse.text();
+      const networkText = await networkResponse.clone().text();
+
+      if (cachedText !== networkText) {
+
+        await cache.put(url, networkResponse.clone());
+        notifyClients();
+      }
+    } else {
+      await cache.put(url, networkResponse.clone()); // Add new asset
+    }
+  } else {
+    console.warn(`Failed to fetch asset: ${url}`);
+  }
+}
+
+// Fetch event - Serve from cache or fallback to network
 self.addEventListener("fetch", (event) => {
   const requestUrl = new URL(event.request.url);
 
-  // Cache-first strategy for static assets
   if (STATIC_ASSETS.includes(requestUrl.pathname)) {
+    // Cache-first strategy for static assets
     event.respondWith(
       caches.match(event.request).then((cachedResponse) => {
-        return (
-          cachedResponse ||
-          fetch(event.request).then((networkResponse) => {
-            return caches.open(STATIC_CACHE_NAME).then((cache) => {
-              cache.put(event.request, networkResponse.clone());
-              return networkResponse;
-            });
-          })
-        );
+        if (cachedResponse) {
+
+          updateStaticCache(requestUrl);
+          return cachedResponse;
+        }
       })
     );
-    return;
-  }
+  } else {
 
-  // Dynamic caching for external URLs (e.g., APIs or external resources)
-  if (requestUrl.origin !== location.origin) {
+    // Dynamic cache with fallback
     event.respondWith(
-      caches.match(event.request).then((cachedResponse) => {
-        return (
-          cachedResponse ||
-          fetch(event.request).then((networkResponse) => {
-            return caches.open(DYNAMIC_CACHE_NAME).then((cache) => {
-              cache.put(event.request, networkResponse.clone());
-              return networkResponse;
-            });
-          })
-        );
-      })
+      fetch(event.request)
+        .then(async (response) => {
+          const cache = await caches.open(DYNAMIC_CACHE);
+          cache.put(event.request, response.clone());
+          return response;
+        })
+        .catch(() => caches.match(event.request)) // Fallback to cache if offline
     );
-    return;
   }
-
-  // Default to network-first for other requests
-  event.respondWith(
-    fetch(event.request).catch(() => caches.match(event.request))
-  );
 });
+
+// Notify clients about cache updates
+function notifyClients() {
+
+  self.clients.matchAll().then((clients) => {
+    clients.forEach((client) => {
+      client.postMessage({ type: "CACHE_UPDATED" });
+    });
+  });
+}
