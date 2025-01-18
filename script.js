@@ -262,12 +262,12 @@ if (systemPrefersDark()) {
 
 const setToggleButton = () => {
   const icon = document.getElementById("toggle-icon");
-  if (document.body.classList.contains("light-mode")) {
-    icon.classList.remove("fa-sun");
-    icon.classList.add("fa-moon");
-  } else {
+  if (systemPrefersDark()) {
     icon.classList.remove("fa-moon");
     icon.classList.add("fa-sun");
+  } else {
+    icon.classList.remove("fa-sun");
+    icon.classList.add("fa-moon");
   }
 };
 
@@ -280,7 +280,13 @@ const toggleMode = () => {
 window
   .matchMedia("(prefers-color-scheme: dark)")
   .addEventListener("change", () => {
-    toggleMode();
+    if (
+      systemPrefersDark() &&
+      (document.getElementById("toggle-icon").classList.contains("fa-sun") ||
+        document.body.classList.contains("light-mode"))
+    ) {
+      toggleMode();
+    }
   });
 
 // Path to the dynamically created secrets file
