@@ -83,7 +83,9 @@ function createEventHeader(event) {
     event.book.title
   )}`;
 
-  return `<div class="event-card${otherClass ? " " + otherClass : ""}">
+  return `<div class="event-card${
+    otherClass ? " " + otherClass : ""
+  }" json="${encodeURIComponent(JSON.stringify(event))}">
       <div class="event-card__header">
         <div>  
           <h2 class="event-card__title">${
@@ -163,11 +165,12 @@ function createBookElement(event) {
       const bookEl = newEl("div", {
         className: "event-card__book",
       });
+      bookEl.setAttribute("isbn", book.isbn);
       const bookItems = newEl("div", { className: "event-card__book-items" });
       const bookDetails = newEl("div", { className: "book-details" });
       const bookTags = newEl("div", { className: "book-tags" });
       const bookAuthor = newEl("a", {
-        className: "book-item",
+        className: "book-item author",
         href: `${
           data?.authors[0]?.author?.key
             ? `https://openlibrary.org${data.authors[0].author.key}`
@@ -176,7 +179,7 @@ function createBookElement(event) {
         target: "_blank",
         innerText: titleCase(book?.author),
       });
-      // console.log(data);
+
       const desc = data?.description?.value;
       var converter = new showdown.Converter();
       var markHtml = converter.makeHtml(desc);
@@ -257,21 +260,21 @@ if (systemPrefersDark()) {
   icon.classList.add("fa-moon");
 }
 
-// Function to toggle the mode
-const toggleMode = () => {
-  const body = document.body;
-  body.classList.toggle("light-mode");
-  body.class;
-
-  // Toggle between sun and moon icons
+const setToggleButton = () => {
   const icon = document.getElementById("toggle-icon");
-  if (body.classList.contains("light-mode")) {
+  if (document.body.classList.contains("light-mode")) {
     icon.classList.remove("fa-sun");
     icon.classList.add("fa-moon");
   } else {
     icon.classList.remove("fa-moon");
     icon.classList.add("fa-sun");
   }
+};
+
+// Function to toggle the mode
+const toggleMode = () => {
+  document.body.classList.toggle("light-mode");
+  setToggleButton();
 };
 
 window
@@ -282,21 +285,6 @@ window
 
 // Path to the dynamically created secrets file
 const secretsPath = "./secrets.json";
-
-fetch("./data/events.json")
-  .then((response) => response.json())
-  .then((data) => {
-    const eventsList = document.getElementById("events-list");
-
-    data.events.forEach((event) => {
-      const li = newEl("li", { className: "raised" });
-      (async () => {
-        li.innerHTML = await createEventCard(event);
-      })();
-      eventsList.appendChild(li);
-    });
-  })
-  .catch((error) => console.error("Error loading JSON:", error));
 
 async function getOpenLibraryData(isbn) {
   const url = `https://openlibrary.org/search.json?q=isbn:${isbn}&limit=1.json`;
@@ -320,3 +308,145 @@ async function getOpenLibraryData(isbn) {
       console.error("Failed to look up book information:", error);
     });
 }
+
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("./sw.js").then(() => {
+    navigator.serviceWorker.addEventListener("message", (event) => {
+      if (event.data.type === "CACHE_UPDATED") {
+        refreshEvents();
+      }
+    });
+  });
+}
+
+function eventCardToJson(eventCard) {
+  if (!eventCard) return null;
+  return JSON.parse(decodeURIComponent(eventCard.getAttribute("json")));
+}
+
+function refreshEvents() {
+  setToggleButton();
+  fetch("./data/events.json")
+    .then((response) => response.json())
+    .then(async (data) => {
+      const eventsList = document.getElementById("events-list");
+      const existingEventCards = Array.from(
+        document.querySelectorAll(".event-card")
+      );
+
+      for (const event of data.events) {
+        let foundCard = false;
+        const newCard = await createEventCard(event);
+
+        for (const oldCard of existingEventCards) {
+          const oldEvent = eventCardToJson(oldCard);
+          if (
+            (oldEvent?.book?.title ?? "TBD") ===
+              (event?.book?.title ?? "TBD") &&
+            ((oldEvent?.details?.date == event?.details?.date &&
+              oldEvent?.details?.host == event?.details?.host) ||
+              oldEvent?.details?.links?.storygraph ==
+                event?.details?.links?.storygraph)
+          ) {
+            foundCard = true;
+
+            // Compare JSON objects for changes
+            if (JSON.stringify(oldEvent) !== JSON.stringify(event)) {
+              const parentLi = oldCard.closest("li");
+              if (parentLi) {
+                newCard.className = oldCard.className;
+                parentLi.innerHTML = newCard;
+              }
+            }
+            break;
+          }
+        }
+
+        if (!foundCard) {
+          // Add new card
+          const li = newEl("li", { className: "raised" });
+          li.innerHTML = newCard;
+          eventsList.appendChild(li);
+        }
+      }
+    })
+    .catch((error) => console.error("Error loading JSON:", error));
+}
+
+// Load events initially
+// refreshEvents();
+
+function createEventList(events) {
+  const eventsList = document.getElementById("events-list");
+  const loadingSpinner = document.getElementById("loading-spinner");
+
+  // Show the spinner
+  loadingSpinner.classList.remove("hidden");
+
+  const promises = events.map(async (event, index) => {
+    const li = newEl("li", { className: "raised hidden" }); // Start as hidden
+    li.innerHTML = await createEventCard(event);
+
+    // Wait for all images in the <li> to load
+    const images = li.querySelectorAll("img");
+    const imageLoadPromises = Array.from(images).map(
+      (img) =>
+        new Promise((resolve) => {
+          if (img.complete) {
+            resolve(); // Image already loaded
+          } else {
+            img.addEventListener("load", resolve);
+            img.addEventListener("error", resolve);
+          }
+        })
+    );
+
+    // Wait for all image load promises to resolve
+    await Promise.all(imageLoadPromises);
+
+    return { li, index };
+  });
+
+  // Wait for all promises to resolve
+  Promise.all(promises)
+    .then((resolvedItems) => {
+      // Sort resolved items based on the original index
+      resolvedItems.sort((a, b) => a.index - b.index);
+
+      // Append each `li` to the event list
+      resolvedItems.forEach(({ li }) => {
+        eventsList.appendChild(li);
+        li.classList.remove("hidden"); // Show each <li> after its content is ready
+      });
+
+      // Remove the hidden class from the entire list
+      eventsList.classList.remove("hidden");
+
+      // Hide the spinner after everything is loaded
+      loadingSpinner.classList.add("hidden");
+    })
+    .catch((error) => {
+      console.error("Error creating event list:", error);
+      // Hide spinner in case of an error
+      loadingSpinner.classList.add("hidden");
+    });
+}
+
+async function setup() {
+  try {
+    const response = await fetch("./data/events.json");
+    const data = await response.json();
+
+    if (data?.events?.length) {
+      createEventList(data.events);
+    } else {
+      console.warn("No events found in the JSON data.");
+      document.getElementById("events-list").classList.remove("hidden");
+    }
+  } catch (error) {
+    console.error("Failed to initialize events list:", error);
+    document.getElementById("events-list").classList.remove("hidden");
+  }
+}
+
+setup();
