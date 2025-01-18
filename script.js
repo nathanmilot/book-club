@@ -142,7 +142,7 @@ function createBookElement(event) {
         className: "book-cover-wrapper",
       });
       const playButton = newEl("button", {
-        classList: "play-button hidden",
+        classList: "play-button",
       });
       playButton.setAttribute(
         "onclick",
