@@ -43,7 +43,6 @@ async function updateStaticCache(url) {
       const networkText = await networkResponse.clone().text();
 
       if (cachedText !== networkText) {
-
         await cache.put(url, networkResponse.clone());
         notifyClients();
       }
@@ -64,14 +63,12 @@ self.addEventListener("fetch", (event) => {
     event.respondWith(
       caches.match(event.request).then((cachedResponse) => {
         if (cachedResponse) {
-
           updateStaticCache(requestUrl);
           return cachedResponse;
         }
       })
     );
   } else {
-
     // Dynamic cache with fallback
     event.respondWith(
       fetch(event.request)
@@ -87,7 +84,6 @@ self.addEventListener("fetch", (event) => {
 
 // Notify clients about cache updates
 function notifyClients() {
-
   self.clients.matchAll().then((clients) => {
     clients.forEach((client) => {
       client.postMessage({ type: "CACHE_UPDATED" });
