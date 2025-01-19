@@ -35,7 +35,7 @@ let isPulling = false;
 
 document.body.addEventListener("touchstart", (e) => {
   startY = e.touches[0].clientY; // Record the initial touch position
-  containerScrollTop= document.querySelector(".container").scrollTop;
+  containerScrollTop = document.querySelector(".container").scrollTop;
   isPulling = false; // Reset the pulling state
   // console.log("touch start");
 });
@@ -45,9 +45,7 @@ document.body.addEventListener("touchmove", (e) => {
   // console.log(document.querySelector(".container").scrollTop);
   // Check if the user is pulling down, the scroll position is at the top, and they've pulled far enough
 
-  isPulling =
-    currentY > startY + 50 &&
-    containerScrollTop <= 10; // Set the pulling state
+  isPulling = currentY > startY + 50 && containerScrollTop <= 10; // Set the pulling state
 
   // console.log("touch move");
 });
