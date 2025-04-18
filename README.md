@@ -4,16 +4,22 @@
 {
   "events": [
     {
-      "details": {
-        "date": "2025-01-01T10:00",
-        "title": "Title",
-        "location": "<a href='https://maps.app.goo.gl/' target='_blank'>Location</a>"
+      "book": {
+        "title": "The Bone Shard Daughter",
+        "author": "Andrea G. Stewart",
+        "isbn": "9780316541428"
       },
-      "description": "text",
-      "menu": ["a", "b", "c"]
-    }
+      "details": {
+        "date": "2025-02-23T16:00",
+        "host": "Nathan",
+        "links": {
+          "discord": "<link>",
+          "storygraph": "<link>",
+          "audiobookshelf": "<link>"
+        }
+      }
+    },
+    ...
   ]
 }
 ```
-
-`location`, `description`, and `menu` aren't required fields, and have default values populated.
