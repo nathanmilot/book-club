@@ -49,7 +49,11 @@
       }
     },
     {
-      "book": {},
+      "book": {
+        "title": "Bad Cree",
+        "author": "Jessica Johns",
+        "isbn": "9780385548694"
+      },
       "details": {
         "date": "2025-08-31T16:00",
         "host": "Luke",
