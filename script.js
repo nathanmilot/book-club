@@ -210,7 +210,9 @@ function createBookElement(event) {
         innerText: titleCase(book?.author),
       });
 
-      const desc = data?.description?.value;
+      const desc = data?.description?.value
+        ? data?.description?.value
+        : data?.description;
       var converter = new showdown.Converter();
       var markHtml = converter.makeHtml(desc);
 
