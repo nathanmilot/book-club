@@ -50,33 +50,33 @@
     },
     {
       "book": {
-        "title": "Bad Cree",
-        "author": "Jessica Johns",
-        "isbn": "9780385548694"
-      },
-      "details": {
-        "date": "2025-08-31T16:00",
-        "host": "Luke",
-        "links": {
-          "discord": "https://discord.com/events/1156403822705528862/1324487959822733403",
-          "storygraph": "https://app.thestorygraph.com/book_clubs/23731432-f71b-4bee-9f9d-9ac278bf8551/meetings/845156f0-ef66-4f2a-9696-6941bd5b0212", 
-          "audiobookshelf": "https://audiobooks.milot.family/audiobookshelf/item/2552a46b-5994-4b47-82ce-43e4eb3bb812"
-        }
-      }
-    },
-    {
-      "book": {
         "title": "Kitchen Confidential",
         "author": "Anthony Bourdain",
         "isbn": "9780060899226"
       },
       "details": {
-        "date": "2025-10-26T16:00",
+        "date": "2025-08-3`T16:00",
         "host": "Kalyn",
         "links": {
           "discord": "https://discord.com/events/1156403822705528862/1324488351184720013",
           "storygraph": "https://app.thestorygraph.com/book_clubs/23731432-f71b-4bee-9f9d-9ac278bf8551/meetings/d004dcde-d831-4cad-986d-3c253d96dab6",
           "audiobookshelf": "https://audiobooks.milot.family/item/c9e9ef82-5619-42d5-8ff0-b5e51c3f1a62"
+        }
+      }
+    },
+    {
+      "book": {
+        "title": "Bad Cree",
+        "author": "Jessica Johns",
+        "isbn": "9780385548694"
+      },
+      "details": {
+        "date": "2025-10-26T16:00",
+        "host": "Luke",
+        "links": {
+          "discord": "https://discord.com/events/1156403822705528862/1324487959822733403",
+          "storygraph": "https://app.thestorygraph.com/book_clubs/23731432-f71b-4bee-9f9d-9ac278bf8551/meetings/845156f0-ef66-4f2a-9696-6941bd5b0212",
+          "audiobookshelf": "https://audiobooks.milot.family/audiobookshelf/item/2552a46b-5994-4b47-82ce-43e4eb3bb812"
         }
       }
     },
